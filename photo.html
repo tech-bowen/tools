@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bowen 工具箱-----图片工具</title>
+  <style>
+    /* CSS 样式 */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f5f9; /* 浅蓝色背景 */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      width: 90%;
+      background-color: #ffffff; /* 白色容器背景 */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      color: #007bff; /* 蓝色标题 */
+      margin-bottom: 20px;
+    }
+    .time-container {
+      text-align: right;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #666666;
+    }
+    .input-container {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    input[type="file"], input[type="range"], select, button {
+      margin: 10px 0;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      width: calc(50% - 20px);
+      box-sizing: border-box;
+    }
+    input[type="range"] {
+      width: calc(100% - 20px);
+    }
+    .output-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .output-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+    }
+    .output-image:hover {
+      transform: scale(1.05);
+    }
+    .download-button {
+      margin-top: 10px;
+      padding: 8px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      margin: 10px auto;
+    }
+    .download-button:hover {
+      background-color: #0056b3;
+    }
+    .buttons-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .return-button, .send-email-button {
+      padding: 10px;
+      font-size: 16px;
+      color: #007bff;
+      text-decoration: none;
+      border: 1px solid #007bff;
+      border-radius: 4px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      display: inline-block;
+    }
+    .return-button:hover, .send-email-button:hover {
+      background-color: #007bff;
+      color: #ffffff;
+    }
+    .return-button svg, .send-email-button svg {
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .copyright {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #666666; /* 灰色版权信息 */
+    }
+
+    /* 响应式设计 */
+    @media (min-width: 768px) {
+      .container {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="time-container">
+      <span id="utc-time"></span> UTC / <span id="utc8-time"></span> UTC+8
+    </div>
+    <h1>Bowen 工具箱-----图片工具</h1>
+    <div class="input-container">
+      <input type="file" id="fileInput">
+      <label for="formatSelect">选择转换格式：</label>
+      <select id="formatSelect">
+        <option value="image/jpeg">JPEG</option>
+        <option value="image/png">PNG</option>
+        <option value="image/webp">WEBP</option>
+        <option value="image/gif">GIF</option>
+        <option value="image/bmp">BMP</option>
+      </select>
+      <label for="qualityRange">选择压缩质量：</label>
+      <input type="range" id="qualityRange" min="0" max="1" step="0.1" value="0.8" oninput="updateQualityValue(this.value)">
+      <span id="qualityValue">0.8</span>
+      <label for="widthInput">调整图片尺寸：</label>
+      <input type="number" id="widthInput" min="10" step="10" placeholder="宽度（px）">
+      <input type="number" id="heightInput" min="10" step="10" placeholder="高度（px）">
+    </div>
+    <div class="mode-container">
+      <label for="modeSelect">选择模式：</label>
+      <select id="modeSelect" onchange="toggleAdvancedOptions(this.value)">
+        <option value="simple">简单模式</option>
+        <option value="advanced">高级模式</option>
+      </select>
+    </div>
+    <div id="advancedOptions" style="display: none;">
+      <!-- 在这里添加高级模式下的更多选项 -->
+      <label for="brightnessRange">亮度调整：</label>
+      <input type="range" id="brightnessRange" min="0" max="200" step="1" value="100">
+      <br>
+      <label for="contrastRange">对比度调整：</label>
+      <input type="range" id="contrastRange" min="0" max="200" step="1" value="100">
+      <br>
+      <label for="hueRange">色相调整：</label>
+      <input type="range" id="hueRange" min="-180" max="180" step="1" value="0">
+    </div>
+    <button onclick="handleFile()">处理图片</button>
+    <div class="output-container" id="outputContainer"></div>
+    <a id="downloadLink" class="download-button" style="display: none;" download="processed-image.jpg">下载处理后的图片</a>
+    <div class="buttons-container">
+      <a class="return-button" href="https://tools.tech-bowen.com" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        返回工具箱
+      </a>
+      <a class="send-email-button" href="mailto:admin@tech-bowen.com">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2H2v20l4-4h12l4 4V2z"/><path d="M16 8l-4 4-4-4M12 12V8"/></svg>
+        发送邮件
+      </a>
+    </div>
+    <div class="copyright">
+      &copy; 2024 Bowen 工具箱. All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    // JavaScript 实现
+    function handleFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formatSelect = document.getElementById('formatSelect');
+      const qualityRange = document.getElementById('qualityRange');
+      const widthInput = document.getElementById('widthInput');
+      const heightInput = document.getElementById('heightInput');
+      const modeSelect = document.getElementById('modeSelect').value;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          // 设置图片尺寸
+          let targetWidth = img.width;
+          let targetHeight = img.height;
+
+          if (widthInput.value && widthInput.value !== '' && heightInput.value && heightInput.value !== '') {
+            targetWidth = parseInt(widthInput.value);
+            targetHeight = parseInt(heightInput.value);
+          } else if (widthInput.value && widthInput.value !== '') {
+            targetWidth = parseInt(widthInput.value);
+            targetHeight = img.height * (targetWidth / img.width);
+          } else if (heightInput.value && heightInput.value !== '') {
+            targetHeight = parseInt(heightInput.value);
+            targetWidth = img.width * (targetHeight / img.height);
+          }
+
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+
+          // 绘制图片到画布
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+          // 图片处理：亮度、对比度、色相调整
+          const brightnessRange = document.getElementById('brightnessRange').value;
+          const contrastRange = document.getElementById('contrastRange').value;
+          const hueRange = document.getElementById('hueRange').value;
+
+          ctx.filter = `brightness(${brightnessRange}%) contrast(${contrastRange}%) hue-rotate(${hueRange}deg)`;
+
+          // 图片压缩和转换格式
+          canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const outputContainer = document.getElementById('outputContainer');
+            outputContainer.innerHTML = `<img class="output-image" src="${url}" alt="处理后的图片">`;
+
+            // 显示下载按钮
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+            downloadLink.style.display = 'inline-block';
+          }, formatSelect.value, qualityRange.value);
+
+          // 更新压缩质量显示
+          updateQualityValue(qualityRange.value);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 实时更新 UTC 和 UTC+8 时间
+    function updateTime() {
+      const now = new Date();
+      const utcTime = now.toISOString().slice(11, 19);
+      const utc8Time = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Shanghai', hour12: false });
+
+      document.getElementById('utc-time').textContent = utcTime;
+      document.getElementById('utc8-time').textContent = utc8Time;
+    }
+
+    // 更新压缩质量数值显示
+    function updateQualityValue(value) {
+      document.getElementById('qualityValue').textContent = value;
+    }
+
+    // 切换高级模式选项显示
+    function toggleAdvancedOptions(mode) {
+      const advancedOptions = document.getElementById('advancedOptions');
+      if (mode === 'advanced') {
+        advancedOptions.style.display = 'block';
+      } else {
+        advancedOptions.style.display = 'none';
+      }
+    }
+
+    // 初始页面加载时更新时间，每秒更新一次
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
