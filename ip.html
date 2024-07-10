@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bowen 工具箱-----IP检测</title>
+    <style>
+        /* 全局样式 */
+        body {
+            background-color: #2c3e50;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* 头部样式 */
+        .header {
+            background-color: rgba(41, 128, 185, 0.9);
+            padding: 10px;
+            text-align: right;
+        }
+        /* 内容区样式 */
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        /* 页脚样式 */
+        .footer {
+            background-color: rgba(41, 128, 185, 0.9);
+            text-align: center;
+            padding: 10px;
+        }
+        /* 按钮样式 */
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .buttons a {
+            display: inline-block;
+            color: white;
+            background-color: rgba(41, 128, 185, 0.9);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .buttons a:hover {
+            background-color: rgba(52, 152, 219, 1);
+            transform: scale(1.1);
+        }
+        .buttons a:active {
+            background-color: rgba(41, 128, 185, 0.8);
+            transform: scale(0.9);
+        }
+        /* IP信息样式 */
+        .ip-info {
+            text-align: center;
+            font-size: 18px; /* 调整字体大小为18px */
+        }
+        /* 倒计时样式 */
+        .countdown {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* 媒体查询：针对手机端 */
+        @media only screen and (max-width: 600px) {
+            .content {
+                font-size: 16px; /* 手机端字体调整为16px */
+            }
+            .ip-info {
+                font-size: 14px; /* 手机端IP信息字体调整为14px */
+            }
+        }
+    </style>
+    <script>
+        // 更新IP信息的函数
+        function updateIPInfo() {
+            // 第三方IP检测服务列表
+            const ipServices = [
+                'https://ipinfo.io/json',
+                'https://api.ipgeolocation.io/ipgeo?apiKey=YOUR_API_KEY',  // 请替换为实际的API密钥
+                'https://freegeoip.app/json/',
+                'https://ip-api.com/json',
+                'https://ifconfig.co/json',
+                'https://ip.seeip.org/json',
+                'https://extreme-ip-lookup.com/json/',
+                'https://get.geojs.io/v1/ip/geo.json',
+                'https://ipwhois.app/json/',
+                'https://api64.ipify.org?format=json'
+            ];
+
+            // 使用Promise.race获取最快响应的服务数据
+            Promise.race(ipServices.map(url => fetch(url)))
+                .then(res => res.json())
+                .then(data => {
+                    // 提取IP和所属地信息
+                    const ip = data.ip;
+                    const location = `${data.city}, ${data.country_name}`;
+
+                    // 更新DOM中的IP信息
+                    const ipElement = document.getElementById('ip-address');
+                    const locationElement = document.getElementById('ip-location');
+                    
+                    // 更新IP和所属地信息
+                    ipElement.innerText = `IP地址: ${ip}`;
+                    locationElement.innerText = `所属地: ${location}`;
+                })
+                .catch(error => console.error('获取IP信息时发生错误:', error));
+        }
+
+        // 更新UTC和UTC+8时间的函数
+        function updateClocks() {
+            const now = new Date();
+            const utcTime = now.toUTCString().split(' ')[4];
+            const utcPlus8 = new Date(now.getTime() + 8 * 60 * 60 * 1000).toUTCString().split(' ')[4];
+            document.getElementById('utc-time').innerText = `UTC: ${utcTime}`;
+            document.getElementById('utc-plus8-time').innerText = `UTC+8: ${utcPlus8}`;
+        }
+
+        // 每秒更新时间
+        setInterval(updateClocks, 1000);
+
+        // 页面加载时初始化IP信息和时间，并设置IP信息每分钟更新
+        function initialize() {
+            updateIPInfo();
+            updateClocks();
+            setInterval(updateIPInfo, 60000); // 每分钟更新一次IP信息
+            startCountdown();
+        }
+
+        // 页面加载时调用initialize函数
+        window.onload = initialize;
+
+        // 开始倒计时
+        function startCountdown() {
+            let count = 10; // 刷新倒计时时间，单位秒
+            const countdownElement = document.getElementById('countdown');
+
+            const countdownInterval = setInterval(() => {
+                count--;
+                countdownElement.innerText = `更新倒计时: ${count} 秒`;
+
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.innerText = '刷新中...';
+                }
+            }, 1000);
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <span id="utc-time"></span><br>
+        <span id="utc-plus8-time"></span>
+    </div>
+
+    <div class="content">
+        <div class="ip-info">
+            <p id="ip-address">IP地址: 加载中...</p>
+            <p id="ip-location">所属地: 加载中...</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© Tech-bowen管理组 2024 版权所有</p>
+    </div>
+
+    <div class="buttons">
+        <a href="https://tools.tech-bowen.com">返回工具箱</a>
+        <a href="https://tech-bowen.com">返回官网</a>
+        <a href="mailto:admin@tech-bowen.com">发送邮件</a>
+    </div>
+
+    <div class="countdown" id="countdown">更新倒计时: 10 秒</div>
+</body>
+</html>
