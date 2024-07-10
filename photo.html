@@ -69,9 +69,20 @@
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
       transition: transform 0.3s ease;
+      position: relative;
     }
     .output-image:hover {
       transform: scale(1.05);
+    }
+    .watermark {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 5px 10px;
+      font-size: 12px;
+      color: #333333;
+      border-radius: 4px;
     }
     .download-button {
       margin-top: 10px;
@@ -155,6 +166,8 @@
         <option value="simple">简单模式</option>
         <option value="advanced">高级模式</option>
       </select>
+      <label for="passwordInput">密码：</label>
+      <input type="password" id="passwordInput">
     </div>
     <div id="advancedOptions" style="display: none;">
       <!-- 在这里添加高级模式下的更多选项 -->
@@ -181,22 +194,22 @@
       </a>
     </div>
     <div class="copyright">
-      &copy; 2024 Bowen 工具箱. All rights reserved.
+      &copy; 2024 Bowen 工具箱. 保留所有权利.
     </div>
   </div>
 
   <script>
-    // JavaScript 实现
+    // 处理图片
     function handleFile() {
       const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
-      if (!file) return;
-
       const formatSelect = document.getElementById('formatSelect');
       const qualityRange = document.getElementById('qualityRange');
       const widthInput = document.getElementById('widthInput');
       const heightInput = document.getElementById('heightInput');
-      const modeSelect = document.getElementById('modeSelect').value;
+      const passwordInput = document.getElementById('passwordInput');
+
+      const file = fileInput.files[0];
+      if (!file) return;
 
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -232,6 +245,17 @@
           const hueRange = document.getElementById('hueRange').value;
 
           ctx.filter = `brightness(${brightnessRange}%) contrast(${contrastRange}%) hue-rotate(${hueRange}deg)`;
+
+          // 添加水印
+          const password = passwordInput.value;
+          if (password === 'admin') {
+            // 用户输入正确的密码，不添加水印
+          } else {
+            // 默认情况下添加水印
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '12px Arial';
+            ctx.fillText('Bowen工具箱生成', canvas.width - 120, canvas.height - 10);
+          }
 
           // 图片压缩和转换格式
           canvas.toBlob(function(blob) {
