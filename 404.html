@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        body {
+            background-color: #2c3e50;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+        .header {
+            width: 100%;
+            background-color: rgba(41, 128, 185, 0.9);
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+        .marquee {
+            color: white;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 15s linear infinite;
+        }
+        @keyframes marquee {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+        .content {
+            text-align: center;
+            margin-top: 100px; /* 保证内容不被固定头部覆盖 */
+        }
+        .custom-text {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons a {
+            display: inline-block;
+            color: white;
+            background-color: rgba(41, 128, 185, 0.9);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .buttons a:hover {
+            background-color: rgba(52, 152, 219, 1);
+            transform: scale(1.1);
+        }
+        .buttons a:active {
+            background-color: rgba(41, 128, 185, 0.8);
+            transform: scale(0.9);
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 14px;
+        }
+        .countdown {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        function updateClocks() {
+            const now = new Date();
+            const utcTime = now.toUTCString().split(' ')[4];
+            const utcPlus8 = new Date(now.getTime() + 8 * 60 * 60 * 1000).toUTCString().split(' ')[4];
+            document.getElementById('utc-time').innerText = `UTC: ${utcTime}`;
+            document.getElementById('utc-plus8-time').innerText = `UTC+8: ${utcPlus8}`;
+        }
+        setInterval(updateClocks, 1000);
+
+        function initialize() {
+            updateClocks();
+            startCountdown();
+        }
+
+        window.onload = initialize;
+
+        function startCountdown() {
+            let count = 120; // 2分钟倒计时时间，单位秒
+            const countdownElement = document.getElementById('countdown');
+
+            const countdownInterval = setInterval(() => {
+                count--;
+                countdownElement.innerText = `2分钟后自动跳转到官网，倒计时: ${count} 秒`;
+
+                if (count <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = "https://tech-bowen.com";
+                }
+            }, 1000);
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="marquee">
+            <span>您访问的网址存在错误，请检查后重新访问。</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>404 - 页面未找到</h1>
+        <p>您访问的网址: <span id="error-url"></span> 不存在。</p>
+        <div class="custom-text" id="custom-text">这是一个自定义文本行，您可以在此处添加任何信息。</div>
+        <div class="buttons">
+            <a href="https://tech-bowen.com">前往官网</a>
+            <a href="mailto:admin@tech-bowen.com">发送邮件</a>
+        </div>
+        <div class="countdown" id="countdown">2分钟后自动跳转到官网，倒计时: 120 秒</div>
+    </div>
+
+    <div class="footer">
+        <span id="utc-time"></span><br>
+        <span id="utc-plus8-time"></span>
+    </div>
+
+    <script>
+        document.getElementById('error-url').innerText = window.location.href;
+    </script>
+</body>
+</html>
