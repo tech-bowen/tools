@@ -34,6 +34,27 @@
       color: #007bff; /* 蓝色标题 */
       margin-bottom: 20px;
     }
+    .scrolling-text {
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #333333;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .scrolling-text span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll 10s linear infinite;
+    }
+    @keyframes scroll {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(-100%, 0);
+      }
+    }
     .time-container {
       text-align: right;
       margin-bottom: 10px;
@@ -135,10 +156,28 @@
         width: 80%;
       }
     }
+    /* 处理按钮动画 */
+    .animate-button {
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="scrolling-text">
+      <span>Javascript error </span>
+    </div>
     <div class="time-container">
       <span id="utc-time"></span> UTC / <span id="utc8-time"></span> UTC+8
     </div>
@@ -180,11 +219,11 @@
       <label for="hueRange">色相调整：</label>
       <input type="range" id="hueRange" min="-180" max="180" step="1" value="0">
     </div>
-    <button onclick="handleFile()">处理图片</button>
+    <button class="animate-button" onclick="handleFile()">处理图片</button>
     <div class="output-container" id="outputContainer"></div>
     <a id="downloadLink" class="download-button" style="display: none;" download="processed-image.jpg">下载处理后的图片</a>
     <div class="buttons-container">
-      <a class="return-button" href="https://tools.tech-bowen.com" target="_blank">
+      <a class="return-button" href="https://tools.tech-bowen.com">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         返回工具箱
       </a>
