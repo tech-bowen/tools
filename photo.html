@@ -157,8 +157,8 @@
       }
     }
     /* 处理按钮动画 */
-    .animate-button {
-      animation: pulse 1s infinite;
+    .animate-button-click {
+      animation: pulse 0.5s;
     }
     @keyframes pulse {
       0% {
@@ -176,7 +176,7 @@
 <body>
   <div class="container">
     <div class="scrolling-text">
-      <span>Javascript error </span>
+      <span>Connecting to tech bowen.com service</span>
     </div>
     <div class="time-container">
       <span id="utc-time"></span> UTC / <span id="utc8-time"></span> UTC+8
@@ -246,6 +246,15 @@
       const widthInput = document.getElementById('widthInput');
       const heightInput = document.getElementById('heightInput');
       const passwordInput = document.getElementById('passwordInput');
+      const button = document.querySelector('.animate-button');
+
+      // 添加动画类
+      button.classList.add('animate-button-click');
+
+      // 移除动画类
+      setTimeout(() => {
+        button.classList.remove('animate-button-click');
+      }, 500);
 
       const file = fileInput.files[0];
       if (!file) return;
